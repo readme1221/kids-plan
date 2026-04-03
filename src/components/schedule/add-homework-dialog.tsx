@@ -46,7 +46,7 @@ export function AddHomeworkDialog({
           <DialogTitle>添加功课</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="hw-title">功课名称</Label>
             <Input
               id="hw-title"
@@ -57,12 +57,12 @@ export function AddHomeworkDialog({
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label>截止类型</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="flex gap-3 mt-2">
               <button
                 onClick={() => setDeadlineType("daily")}
-                className={`flex-1 py-2 rounded-lg text-sm ${
+                className={`flex-1 py-3 rounded-lg text-sm ${
                   deadlineType === "daily"
                     ? "bg-[#F59E0B]/20 text-[#F59E0B] ring-2 ring-[#F59E0B]/50"
                     : "bg-[#1C2541] text-[#CBD5E1]/60"
@@ -72,7 +72,7 @@ export function AddHomeworkDialog({
               </button>
               <button
                 onClick={() => setDeadlineType("weekly")}
-                className={`flex-1 py-2 rounded-lg text-sm ${
+                className={`flex-1 py-3 rounded-lg text-sm ${
                   deadlineType === "weekly"
                     ? "bg-[#F3C969]/20 text-[#F3C969] ring-2 ring-[#F3C969]/50"
                     : "bg-[#1C2541] text-[#CBD5E1]/60"
@@ -83,7 +83,7 @@ export function AddHomeworkDialog({
             </div>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="hw-date">截止日期</Label>
             <Input
               id="hw-date"
@@ -93,12 +93,12 @@ export function AddHomeworkDialog({
             />
           </div>
 
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={onClose}>
+          <div className="flex gap-3 pt-2">
+            <Button variant="outline" className="flex-1 py-3" onClick={onClose}>
               取消
             </Button>
             <Button
-              className="flex-1"
+              className="flex-1 py-3"
               disabled={!title.trim()}
               onClick={handleSubmit}
             >
