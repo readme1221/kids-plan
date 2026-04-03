@@ -64,13 +64,13 @@ export default async function WeekPage() {
 
   // 计算剩余天数和槽数
   const remainingDays = dateStates.filter(
-    (d) => new Date(d.date) >= today && d.isOpen,
+    (d) => new Date(d.date).getTime() >= today.getTime() && d.isOpen,
   ).length;
 
   let totalRemainingSlots = 0;
   let fixedTimeSlots = 0;
   for (const dp of dayPlans) {
-    if (dp.date < today || !dp.isOpen) continue;
+    if (dp.date.getTime() < today.getTime() || !dp.isOpen) continue;
     const config = dp.periodConfig as Record<string, { enabled: boolean; parentSlots: number }>;
     for (const p of Object.values(config)) {
       if (p.enabled) totalRemainingSlots += p.parentSlots;

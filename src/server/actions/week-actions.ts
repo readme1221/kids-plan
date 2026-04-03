@@ -50,82 +50,77 @@ export async function settleWeek(weekId: string) {
     throw new Error("本周已结算");
   }
 
-  // ── 处理未完成功课 ──
-  const pendingHomeworks = week.homeworks.filter((h) => h.status === "pending");
-  for (const hw of pendingHomeworks) {
-    await prisma.homework.update({
-      where: { id: hw.id },
-      data: { status: "overdue" },
-    });
-  }
+  // 预先查询活动表（事务内不再查）
+  const allActivities = await prisma.activity.findMany();
 
-  // ── 计算下周结转 ──
   const nextMonday = new Date(week.endDate);
   nextMonday.setUTCDate(nextMonday.getUTCDate() + 1);
   const nextSunday = new Date(nextMonday);
   nextSunday.setUTCDate(nextMonday.getUTCDate() + 6);
 
-  // 创建下周
-  const nextWeek = await prisma.week.create({
-    data: {
-      startDate: nextMonday,
-      endDate: nextSunday,
-      status: "active",
-    },
-  });
-
-  // 为每个任务创建下周状态
-  for (const wts of week.weeklyTaskStates) {
-    const task = wts.taskConfig;
-
-    let carriedOverSlots = 0;
-    if (task.taskType === "quota_weekly") {
-      // 配额型结算规则（规则 10）
-      if (wts.progressStage === "completed_for_week") {
-        // completed_for_week → 默认不结转（规则 8.6）
-        carriedOverSlots = 0;
-      } else {
-        const budget = task.weeklySlotBudget ?? 0;
-        carriedOverSlots = Math.max(0, budget - wts.doneCount);
-      }
+  const result = await prisma.$transaction(async (tx) => {
+    // ── 处理未完成功课 ──
+    const pendingHomeworks = week.homeworks.filter((h) => h.status === "pending");
+    for (const hw of pendingHomeworks) {
+      await tx.homework.update({
+        where: { id: hw.id },
+        data: { status: "overdue" },
+      });
     }
 
-    // 判断是否活跃（重新根据活动表联动）
-    let isActiveNextWeek = task.isActive;
-    if (task.taskType === "quota_weekly" || task.taskType === "fixed_time") {
-      // 检查关联活动
-      const linkedActivity = await prisma.activity.findFirst({
-        where: { linkedTaskId: task.id },
-      });
+    // ── 创建下周 ──
+    const nextWeek = await tx.week.create({
+      data: {
+        startDate: nextMonday,
+        endDate: nextSunday,
+        status: "active",
+      },
+    });
+
+    // ── 为每个任务创建下周状态 ──
+    for (const wts of week.weeklyTaskStates) {
+      const task = wts.taskConfig;
+
+      let carriedOverSlots = 0;
+      if (task.taskType === "quota_weekly") {
+        if (wts.progressStage === "completed_for_week") {
+          carriedOverSlots = 0;
+        } else {
+          const budget = task.weeklySlotBudget ?? 0;
+          carriedOverSlots = Math.max(0, budget - wts.doneCount);
+        }
+      }
+
+      let isActiveNextWeek = task.isActive;
+      const linkedActivity = allActivities.find((a) => a.linkedTaskId === task.id);
       if (linkedActivity && !linkedActivity.activeThisWeek && linkedActivity.autoLinkStop) {
         isActiveNextWeek = false;
       }
+
+      await tx.weeklyTaskState.create({
+        data: {
+          weekId: nextWeek.id,
+          taskConfigId: task.id,
+          assignedCount: 0,
+          doneCount: 0,
+          progressStage: "not_started",
+          carriedOverSlots,
+          isActiveThisWeek: isActiveNextWeek,
+        },
+      });
     }
 
-    await prisma.weeklyTaskState.create({
-      data: {
-        weekId: nextWeek.id,
-        taskConfigId: task.id,
-        assignedCount: 0,
-        doneCount: 0,
-        progressStage: "not_started",
-        carriedOverSlots,
-        isActiveThisWeek: isActiveNextWeek,
-      },
+    // ── 关闭本周 ──
+    await tx.week.update({
+      where: { id: weekId },
+      data: { status: "closed", settledAt: new Date() },
     });
-  }
 
-  // 关闭本周
-  await prisma.week.update({
-    where: { id: weekId },
-    data: {
-      status: "closed",
-      settledAt: new Date(),
-    },
+    return { nextWeekId: nextWeek.id };
   });
 
   revalidatePath("/week");
   revalidatePath("/day");
 
-  return { nextWeekId: nextWeek.id };
+  return result;
 }

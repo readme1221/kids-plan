@@ -179,6 +179,15 @@ export async function setupDay(params: {
       });
     }
   }
+  // 减量：旧排程中有但新排程中没有的任务（规则 8.5：家长手动移出）
+  for (const taskId of previouslyAssigned) {
+    if (!newlyAssignedTaskIds.has(taskId)) {
+      await prisma.weeklyTaskState.updateMany({
+        where: { weekId, taskConfigId: taskId },
+        data: { assignedCount: { decrement: 1 } },
+      });
+    }
+  }
 
   revalidatePath("/day");
   return { dayPlan, warnings: result.warnings };

@@ -102,13 +102,21 @@ export async function manualPinTask(params: {
 }) {
   const { dayPlanId, period, taskConfigId, homeworkId, weekId } = params;
 
-  // 找到该时段的下一个 order
-  const existingSlots = await prisma.slot.findMany({
-    where: { dayPlanId, period: period as never },
-    orderBy: { order: "desc" },
-    take: 1,
+  // 检查该时段是否还有空位
+  const dayPlan = await prisma.dayPlan.findUniqueOrThrow({
+    where: { id: dayPlanId },
+    include: { slots: true },
   });
-  const nextOrder = existingSlots.length > 0 ? existingSlots[0].order + 1 : 0;
+  const periodConfig = dayPlan.periodConfig as Record<string, { enabled: boolean; parentSlots: number }>;
+  const periodSlots = dayPlan.slots.filter((s) => s.period === period);
+  const maxSlots = periodConfig[period]?.parentSlots ?? 0;
+  if (periodSlots.length >= maxSlots) {
+    throw new Error("该时段已满");
+  }
+
+  const nextOrder = periodSlots.length > 0
+    ? Math.max(...periodSlots.map((s) => s.order)) + 1
+    : 0;
 
   // 创建手动指定 slot
   const slot = await prisma.slot.create({
