@@ -45,10 +45,10 @@ export function SlideDialog({
         <DialogHeader>
           <DialogTitle>滑移原因</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-[#CBD5E1] mb-3">
+        <p className="text-sm text-[#CBD5E1] mb-4">
           「{taskName}」未完成，请选择原因：
         </p>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {REASONS.map((r) => (
             <button
               key={r.value}

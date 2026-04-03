@@ -45,7 +45,7 @@ export function AddHomeworkDialog({
         <DialogHeader>
           <DialogTitle>添加功课</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
             <Label htmlFor="hw-title">功课名称</Label>
             <Input
