@@ -136,7 +136,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
                   </span>
                 </div>
                 {t.carriedOverSlots > 0 && (
-                  <p className="text-[10px] text-orange-500 mt-1">
+                  <p className="text-xs text-orange-500 mt-1">
                     结转 {t.carriedOverSlots} 槽
                   </p>
                 )}

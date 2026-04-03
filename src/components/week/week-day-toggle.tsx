@@ -24,7 +24,7 @@ export function WeekDayToggle({ dates, onToggle }: WeekDayToggleProps) {
           )}
         >
           <span className="font-medium">{getDayName(d.dayOfWeek)}</span>
-          <span className="text-[10px] mt-0.5">
+          <span className="text-xs mt-0.5">
             {d.date.getUTCDate()}
           </span>
         </button>

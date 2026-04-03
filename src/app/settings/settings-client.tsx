@@ -157,11 +157,11 @@ export function SettingsClient({ tasks, activities }: Props) {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{t.name}</span>
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" className="text-xs">
                       {TYPE_LABELS[t.taskType]}
                     </Badge>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-400 mt-0.5">
                     {t.taskType === "quota_weekly" && `每周 ${t.weeklySlotBudget} 次`}
                     {t.taskType === "deadline_weekly" && `需完成 ${t.requiredSlots} 次`}
                     {t.taskType === "fixed_time" &&
@@ -215,11 +215,11 @@ export function SettingsClient({ tasks, activities }: Props) {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{a.name}</span>
-                    <Badge variant="secondary" className="text-[10px]">
+                    <Badge variant="secondary" className="text-xs">
                       {getDayName(a.dayOfWeek)} {a.startTime}-{a.endTime}
                     </Badge>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-400 mt-0.5">
                     {PERIOD_LABELS[a.affectedPeriod]}
                     {a.linkedTaskName && ` · 关联: ${a.linkedTaskName}`}
                     {!a.autoLinkStop && " · 停课不停排"}

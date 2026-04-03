@@ -79,22 +79,22 @@ export function SettleDialog({
           <h3 className="text-xs font-medium text-gray-500 mb-2">功课</h3>
           <div className="grid grid-cols-3 gap-2 text-center text-sm">
             <div>
-              <p className="text-gray-400 text-[10px]">总数</p>
+              <p className="text-gray-400 text-xs">总数</p>
               <p className="font-semibold">{homeworkCount.total}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-[10px]">完成</p>
+              <p className="text-gray-400 text-xs">完成</p>
               <p className="font-semibold text-green-600">{homeworkCount.done}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-[10px]">未完成</p>
+              <p className="text-gray-400 text-xs">未完成</p>
               <p className={cn("font-semibold", homeworkCount.pending > 0 ? "text-red-600" : "text-gray-400")}>
                 {homeworkCount.pending}
               </p>
             </div>
           </div>
           {homeworkCount.pending > 0 && (
-            <p className="text-[10px] text-red-500 mt-1">
+            <p className="text-xs text-red-500 mt-1">
               未完成功课将标记为 overdue
             </p>
           )}

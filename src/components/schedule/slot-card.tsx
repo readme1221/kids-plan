@@ -54,7 +54,7 @@ export function SlotCard({
         >
           {name}
         </span>
-        <span className="text-[10px] text-gray-400 shrink-0">
+        <span className="text-xs text-gray-400 shrink-0">
           {SOURCE_LABELS[sourceType]}
         </span>
       </div>

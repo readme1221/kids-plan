@@ -63,7 +63,7 @@ export function TaskCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <span className="font-medium text-sm truncate">{name}</span>
-            <Badge variant="outline" className="text-[10px] shrink-0">
+            <Badge variant="outline" className="text-xs shrink-0">
               {TYPE_LABELS[taskType]}
             </Badge>
           </div>
@@ -114,7 +114,7 @@ export function TaskCard({
               onProgressChange(next);
             }}
             className={cn(
-              "text-[10px] px-2 py-1 rounded-full whitespace-nowrap",
+              "text-xs px-2 py-1 rounded-full whitespace-nowrap",
               PROGRESS_COLORS[progressStage],
             )}
           >

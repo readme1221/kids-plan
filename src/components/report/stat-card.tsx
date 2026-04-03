@@ -23,7 +23,7 @@ export function StatCard({ title, value, subtitle, color = "blue" }: StatCardPro
     <Card className="p-3 text-center">
       <p className="text-xs text-gray-500">{title}</p>
       <p className={cn("text-2xl font-bold mt-1", COLOR_MAP[color])}>{value}</p>
-      {subtitle && <p className="text-[10px] text-gray-400 mt-0.5">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
     </Card>
   );
 }

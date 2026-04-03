@@ -175,7 +175,7 @@ export function DayPageClient({
           {todayActivities.length > 0 && (
             <div className="flex gap-1 mt-1">
               {todayActivities.map((a) => (
-                <Badge key={a.name} variant="secondary" className="text-[10px]">
+                <Badge key={a.name} variant="secondary" className="text-xs">
                   {a.name} {a.startTime}
                 </Badge>
               ))}
@@ -210,7 +210,7 @@ export function DayPageClient({
                 <span>{hw.title}</span>
                 <Badge
                   variant={hw.deadlineType === "daily" ? "destructive" : "secondary"}
-                  className="text-[10px]"
+                  className="text-xs"
                 >
                   {hw.deadlineDate}
                 </Badge>
