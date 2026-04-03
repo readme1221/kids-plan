@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "misans/lib/Normal/MiSans-Regular.min.css";
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -126,8 +124,7 @@
     @apply bg-background text-foreground;
   }
   html {
-    font-family: "MiSans", "MiSans Normal", system-ui, -apple-system, sans-serif;
+    font-family: "PingFang SC", -apple-system, system-ui, sans-serif;
     font-size: 20px;
-    font-synthesis: weight style;
   }
 }
