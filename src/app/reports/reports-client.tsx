@@ -10,16 +10,16 @@ import type { WeekReportData } from "@/server/queries/report";
 
 const SLIDE_REASON_LABELS: Record<string, string> = {
   time_insufficient: "时间不够",
-  child_gave_up: "孩子放弃",
-  parent_manual: "家长调整",
-  fixed_missed: "错过固定时间",
+  child_gave_up: "孩子主动放弃",
+  parent_manual: "家长手动滑移",
+  fixed_missed: "固定时点未执行",
   deadline_expired: "已过截止",
 };
 
 const PROGRESS_LABELS: Record<string, string> = {
   not_started: "未开始",
   in_progress: "进行中",
-  mostly_done: "接近完成",
+  mostly_done: "基本完成",
   completed_for_week: "本周完成",
 };
 

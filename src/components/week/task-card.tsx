@@ -20,7 +20,7 @@ type TaskCardProps = {
 const PROGRESS_LABELS: Record<ProgressStage, string> = {
   not_started: "未开始",
   in_progress: "进行中",
-  mostly_done: "接近完成",
+  mostly_done: "基本完成",
   completed_for_week: "本周完成",
 };
 

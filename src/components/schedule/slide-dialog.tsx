@@ -25,9 +25,9 @@ type SlideDialogProps = {
 
 const REASONS: { value: SlideReason; label: string }[] = [
   { value: "time_insufficient", label: "时间不够" },
-  { value: "child_gave_up", label: "孩子放弃" },
-  { value: "parent_manual", label: "家长调整" },
-  { value: "fixed_missed", label: "错过固定时间" },
+  { value: "child_gave_up", label: "孩子主动放弃" },
+  { value: "parent_manual", label: "家长手动滑移" },
+  { value: "fixed_missed", label: "固定时点未执行" },
   { value: "deadline_expired", label: "已过截止" },
 ];
 
