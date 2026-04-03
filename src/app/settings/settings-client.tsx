@@ -254,7 +254,7 @@ export function SettingsClient({ tasks, activities }: Props) {
                     key={type}
                     onClick={() => setNewTaskType(type)}
                     className={`py-2 rounded-lg text-xs ${
-                      newTaskType === type ? "bg-blue-100 text-blue-700 ring-2 ring-blue-300" : "bg-gray-50"
+                      newTaskType === type ? "bg-blue-900/50 text-blue-300 ring-2 ring-blue-600" : "bg-gray-800"
                     }`}
                   >
                     {TYPE_LABELS[type]}
@@ -290,7 +290,7 @@ export function SettingsClient({ tasks, activities }: Props) {
                         className={`w-9 h-9 rounded-full text-xs ${
                           newTaskWeekdays.includes(d)
                             ? "bg-blue-500 text-white"
-                            : "bg-gray-100 text-gray-500"
+                            : "bg-gray-700 text-gray-400"
                         }`}
                       >
                         {getDayName(d).slice(1)}
@@ -306,7 +306,7 @@ export function SettingsClient({ tasks, activities }: Props) {
                         key={p}
                         onClick={() => setNewTaskPeriod(p)}
                         className={`py-2 rounded-lg text-xs ${
-                          newTaskPeriod === p ? "bg-blue-100 text-blue-700 ring-2 ring-blue-300" : "bg-gray-50"
+                          newTaskPeriod === p ? "bg-blue-900/50 text-blue-300 ring-2 ring-blue-600" : "bg-gray-800"
                         }`}
                       >
                         {PERIOD_LABELS[p]}
@@ -342,7 +342,7 @@ export function SettingsClient({ tasks, activities }: Props) {
                     key={d}
                     onClick={() => setNewActDay(d)}
                     className={`w-9 h-9 rounded-full text-xs ${
-                      newActDay === d ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-500"
+                      newActDay === d ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-400"
                     }`}
                   >
                     {getDayName(d).slice(1)}
@@ -368,7 +368,7 @@ export function SettingsClient({ tasks, activities }: Props) {
                     key={p}
                     onClick={() => setNewActPeriod(p)}
                     className={`py-2 rounded-lg text-xs ${
-                      newActPeriod === p ? "bg-blue-100 text-blue-700 ring-2 ring-blue-300" : "bg-gray-50"
+                      newActPeriod === p ? "bg-blue-900/50 text-blue-300 ring-2 ring-blue-600" : "bg-gray-800"
                     }`}
                   >
                     {PERIOD_LABELS[p]}
@@ -381,7 +381,7 @@ export function SettingsClient({ tasks, activities }: Props) {
               <select
                 value={newActLinkedTask}
                 onChange={(e) => setNewActLinkedTask(e.target.value)}
-                className="w-full mt-1 px-3 py-2 text-sm bg-gray-50 border rounded-lg"
+                className="w-full mt-1 px-3 py-2 text-sm bg-gray-800 border-gray-700 border rounded-lg"
               >
                 <option value="">不关联</option>
                 {tasks.filter((t) => t.isActive).map((t) => (

@@ -45,7 +45,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
         <select
           value={currentWeekId}
           onChange={(e) => router.push(`/reports?weekId=${e.target.value}`)}
-          className="text-sm bg-gray-50 border rounded-lg px-2 py-1"
+          className="text-sm bg-gray-800 border-gray-700 border rounded-lg px-2 py-1"
         >
           {weeks.map((w) => (
             <option key={w.id} value={w.id}>
@@ -90,15 +90,15 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
         <Card className="p-3">
           <div className="grid grid-cols-3 text-center text-sm">
             <div>
-              <p className="text-gray-500 text-xs">总数</p>
+              <p className="text-gray-400 text-xs">总数</p>
               <p className="font-bold">{report.homeworkStats.total}</p>
             </div>
             <div>
-              <p className="text-gray-500 text-xs">完成</p>
+              <p className="text-gray-400 text-xs">完成</p>
               <p className="font-bold text-green-600">{report.homeworkStats.done}</p>
             </div>
             <div>
-              <p className="text-gray-500 text-xs">过期</p>
+              <p className="text-gray-400 text-xs">过期</p>
               <p className={cn("font-bold", report.homeworkStats.overdue > 0 ? "text-red-600" : "text-gray-400")}>
                 {report.homeworkStats.overdue}
               </p>
@@ -122,7 +122,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className={cn(
                         "h-full rounded-full",
@@ -131,7 +131,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
                       style={{ width: `${Math.min(100, ratio * 100)}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 whitespace-nowrap">
+                  <span className="text-sm text-gray-400 whitespace-nowrap">
                     {t.doneCount}/{t.budget}
                   </span>
                 </div>
@@ -180,7 +180,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
                 .sort(([, a], [, b]) => b - a)
                 .map(([reason, count]) => (
                   <div key={reason} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">
+                    <span className="text-gray-300">
                       {SLIDE_REASON_LABELS[reason] ?? reason}
                     </span>
                     <span className="font-semibold">{count}</span>
@@ -197,8 +197,8 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
           <h2 className="text-sm font-medium text-gray-500 mb-2">预警</h2>
           <div className="space-y-1">
             {report.warnings.map((w, i) => (
-              <Card key={i} className="p-3 bg-red-50 border-red-200">
-                <p className="text-sm text-red-700">{w}</p>
+              <Card key={i} className="p-3 bg-red-900/30 border-red-800">
+                <p className="text-sm text-red-400">{w}</p>
               </Card>
             ))}
           </div>

@@ -22,10 +22,10 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 const SOURCE_COLORS: Record<string, string> = {
-  fixed_time: "border-l-purple-500",
-  manual_pin: "border-l-blue-500",
-  homework: "border-l-red-500",
-  auto_fill: "border-l-gray-300",
+  fixed_time: "border-l-purple-400",
+  manual_pin: "border-l-blue-400",
+  homework: "border-l-red-400",
+  auto_fill: "border-l-gray-600",
   locked: "border-l-purple-300",
 };
 
@@ -42,7 +42,7 @@ export function SlotCard({
       className={cn(
         "px-3 py-2.5 border-l-4 flex items-center justify-between",
         SOURCE_COLORS[sourceType] ?? "border-l-gray-200",
-        isCompleted && "opacity-50 bg-green-50",
+        isCompleted && "opacity-50 bg-green-900/30",
       )}
     >
       <div className="flex items-center gap-2 min-w-0">
@@ -64,7 +64,7 @@ export function SlotCard({
           {onDone && (
             <button
               onClick={onDone}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-green-50 text-green-600 text-lg active:bg-green-100"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-green-900/40 text-green-400 text-lg active:bg-green-900/60"
               aria-label="完成"
             >
               ✓
@@ -73,7 +73,7 @@ export function SlotCard({
           {onSlide && (
             <button
               onClick={onSlide}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-orange-50 text-orange-500 text-sm active:bg-orange-100"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-orange-900/40 text-orange-400 text-sm active:bg-orange-900/60"
               aria-label="滑移"
             >
               →

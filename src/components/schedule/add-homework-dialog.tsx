@@ -64,8 +64,8 @@ export function AddHomeworkDialog({
                 onClick={() => setDeadlineType("daily")}
                 className={`flex-1 py-2 rounded-lg text-sm ${
                   deadlineType === "daily"
-                    ? "bg-red-100 text-red-700 ring-2 ring-red-300"
-                    : "bg-gray-50 text-gray-600"
+                    ? "bg-red-900/50 text-red-300 ring-2 ring-red-600"
+                    : "bg-gray-700 text-gray-400"
                 }`}
               >
                 今日截止
@@ -74,8 +74,8 @@ export function AddHomeworkDialog({
                 onClick={() => setDeadlineType("weekly")}
                 className={`flex-1 py-2 rounded-lg text-sm ${
                   deadlineType === "weekly"
-                    ? "bg-orange-100 text-orange-700 ring-2 ring-orange-300"
-                    : "bg-gray-50 text-gray-600"
+                    ? "bg-orange-900/50 text-orange-300 ring-2 ring-orange-600"
+                    : "bg-gray-700 text-gray-400"
                 }`}
               >
                 本周截止

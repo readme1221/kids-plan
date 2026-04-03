@@ -70,7 +70,7 @@ export function SettleDialog({
           <DialogTitle>周结算确认</DialogTitle>
         </DialogHeader>
 
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-400">
           结算后将关闭本周，创建下周计划。请确认以下摘要：
         </p>
 

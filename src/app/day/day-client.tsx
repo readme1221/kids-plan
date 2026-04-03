@@ -193,8 +193,8 @@ export function DayPageClient({
 
       {/* Warnings */}
       {consecutiveSlideWarning && (
-        <Card className="p-3 bg-red-50 border-red-200">
-          <p className="text-sm text-red-700">
+        <Card className="p-3 bg-red-900/30 border-red-800">
+          <p className="text-sm text-red-400">
             连续 2 天非功课任务完成数为 0，建议关注
           </p>
         </Card>
@@ -202,8 +202,8 @@ export function DayPageClient({
 
       {/* Pending homeworks */}
       {pendingHomeworks.length > 0 && (
-        <Card className="p-3 bg-amber-50 border-amber-200">
-          <p className="text-xs text-amber-700 mb-1">待完成功课</p>
+        <Card className="p-3 bg-amber-900/30 border-amber-800">
+          <p className="text-xs text-amber-400 mb-1">待完成功课</p>
           <div className="space-y-1">
             {pendingHomeworks.map((hw) => (
               <div key={hw.id} className="flex items-center justify-between text-sm">
@@ -305,12 +305,12 @@ export function DayPageClient({
       {/* Manual pin select */}
       {showPinSelect && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-end justify-center">
-          <div className="bg-white rounded-t-2xl w-full max-w-lg p-4 pb-8 safe-area-bottom">
+          <div className="bg-gray-800 rounded-t-2xl w-full max-w-lg p-4 pb-8 safe-area-bottom">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium">选择任务</h3>
               <button
                 onClick={() => setShowPinSelect(false)}
-                className="text-gray-400 text-lg"
+                className="text-gray-500 text-lg"
               >
                 ✕
               </button>
@@ -320,7 +320,7 @@ export function DayPageClient({
                 <button
                   key={t.id}
                   onClick={() => handleManualPin(t.id)}
-                  className="w-full text-left px-4 py-3 rounded-lg bg-gray-50 text-sm hover:bg-gray-100 active:bg-gray-200"
+                  className="w-full text-left px-4 py-3 rounded-lg bg-gray-700 text-sm hover:bg-gray-600 active:bg-gray-500"
                 >
                   {t.name}
                 </button>

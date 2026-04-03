@@ -18,8 +18,8 @@ export function WeekDayToggle({ dates, onToggle }: WeekDayToggleProps) {
           className={cn(
             "flex-1 flex flex-col items-center py-2 rounded-lg text-xs transition-colors",
             d.isOpen
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-400",
+              ? "bg-blue-600 text-white"
+              : "bg-gray-800 text-gray-500",
             d.isToday && "ring-2 ring-blue-300",
           )}
         >
