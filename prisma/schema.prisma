@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum WeekStatus {
+  active
+  closed
+}
+
+enum TaskType {
+  deadline_daily
+  deadline_weekly
+  quota_weekly
+  fixed_time
+}
+
+enum Period {
+  morning
+  afternoon_early
+  afternoon_late
+  evening
+}
+
+enum HomeworkDeadlineType {
+  daily
+  weekly
+}
+
+enum HomeworkStatus {
+  pending
+  done
+  overdue
+}
+
+enum ProgressStage {
+  not_started
+  in_progress
+  mostly_done
+  completed_for_week
+}
+
+enum SlotSourceType {
+  fixed_time
+  manual_pin
+  homework
+  auto_fill
+  locked
+}
+
+enum ExecutionResult {
+  done
+  slid
+}
+
+enum SlideReason {
+  time_insufficient
+  child_gave_up
+  parent_manual
+  fixed_missed
+  deadline_expired
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+/// 7.1 Week - 管理周边界和周级别状态
+model Week {
+  id        String     @id @default(cuid())
+  startDate DateTime   @db.Date
+  endDate   DateTime   @db.Date
+  status    WeekStatus @default(active)
+  settledAt DateTime?
+
+  weeklyTaskStates WeeklyTaskState[]
+  homeworks        Homework[]
+  dayPlans         DayPlan[]
+  executionLogs    ExecutionLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([startDate])
+}
+
+/// 7.2 TaskConfig - 不变的任务配置，周结算不动这张表
+model TaskConfig {
+  id               String   @id @default(cuid())
+  name             String
+  taskType         TaskType
+  weeklySlotBudget Int?
+  requiredSlots    Int?
+  fixedWeekdays    Int[]    @default([])
+  fixedPeriod      Period?
+  isActive         Boolean  @default(true)
+
+  weeklyTaskStates WeeklyTaskState[]
+  linkedActivities Activity[]
+  slots            Slot[]
+  executionLogs    ExecutionLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 7.3 WeeklyTaskState - 每周每个任务一行
+model WeeklyTaskState {
+  id               String        @id @default(cuid())
+  weekId           String
+  taskConfigId     String
+  assignedCount    Int           @default(0)
+  doneCount        Int           @default(0)
+  progressStage    ProgressStage @default(not_started)
+  carriedOverSlots Int           @default(0)
+  isActiveThisWeek Boolean       @default(true)
+
+  week       Week       @relation(fields: [weekId], references: [id])
+  taskConfig TaskConfig @relation(fields: [taskConfigId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([weekId, taskConfigId])
+}
+
+/// 7.4 Homework - 临时功课
+model Homework {
+  id           String             @id @default(cuid())
+  title        String
+  deadlineType HomeworkDeadlineType
+  deadlineDate DateTime           @db.Date
+  status       HomeworkStatus     @default(pending)
+  weekId       String
+
+  week          Week           @relation(fields: [weekId], references: [id])
+  slots         Slot[]
+  executionLogs ExecutionLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 7.5 Activity - 课外活动表
+model Activity {
+  id              String  @id @default(cuid())
+  name            String
+  dayOfWeek       Int
+  startTime       String  // HH:mm
+  endTime         String  // HH:mm
+  affectedPeriod  Period
+  linkedTaskId    String?
+  activeThisWeek  Boolean @default(true)
+  autoLinkStop    Boolean @default(true)
+
+  linkedTask TaskConfig? @relation(fields: [linkedTaskId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 7.6 DayPlan - 每天一行
+model DayPlan {
+  id           String  @id @default(cuid())
+  weekId       String
+  date         DateTime @db.Date
+  isOpen       Boolean  @default(true)
+  periodConfig Json     // PeriodConfig type
+
+  week  Week   @relation(fields: [weekId], references: [id])
+  slots Slot[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([weekId, date])
+}
+
+/// 7.7 Slot - 每个槽位一行
+model Slot {
+  id           String         @id @default(cuid())
+  dayPlanId    String
+  period       Period
+  order        Int
+  sourceType   SlotSourceType
+  taskConfigId String?
+  homeworkId   String?
+  isLocked     Boolean        @default(false)
+
+  dayPlan    DayPlan     @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
+  taskConfig TaskConfig? @relation(fields: [taskConfigId], references: [id])
+  homework   Homework?  @relation(fields: [homeworkId], references: [id])
+
+  executionLogs ExecutionLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([dayPlanId, period, order])
+}
+
+/// 7.8 ExecutionLog - 每次执行一行
+model ExecutionLog {
+  id           String          @id @default(cuid())
+  slotId       String
+  weekId       String
+  date         DateTime        @db.Date
+  taskConfigId String?
+  homeworkId   String?
+  result       ExecutionResult
+  slideReason  SlideReason?
+
+  slot       Slot        @relation(fields: [slotId], references: [id])
+  week       Week        @relation(fields: [weekId], references: [id])
+  taskConfig TaskConfig? @relation(fields: [taskConfigId], references: [id])
+  homework   Homework?   @relation(fields: [homeworkId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([weekId, date])
+}
