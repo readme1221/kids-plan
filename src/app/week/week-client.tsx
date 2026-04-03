@@ -116,7 +116,7 @@ export function WeekPageClient({
       {/* Activities */}
       {activityStates.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">课外活动</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">课外活动</h2>
           <div className="flex flex-wrap gap-2">
             {activityStates.map((a) => (
               <Badge
@@ -136,7 +136,7 @@ export function WeekPageClient({
       {/* Deadline tasks */}
       {deadlineTasks.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">截止型任务</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">截止型任务</h2>
           <div className="space-y-2">
             {deadlineTasks.map((t) => (
               <TaskCard
@@ -161,7 +161,7 @@ export function WeekPageClient({
       {/* Quota tasks */}
       {quotaTasks.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">配额型任务</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">配额型任务</h2>
           <div className="space-y-2">
             {quotaTasks.map((t) => (
               <TaskCard
@@ -186,7 +186,7 @@ export function WeekPageClient({
       {/* Fixed time tasks */}
       {fixedTasks.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">固定时点</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">固定时点</h2>
           <div className="space-y-2">
             {fixedTasks.map((t) => (
               <TaskCard

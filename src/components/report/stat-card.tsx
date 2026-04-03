@@ -11,19 +11,19 @@ type StatCardProps = {
 };
 
 const COLOR_MAP = {
-  green: "text-green-600",
-  red: "text-red-600",
-  yellow: "text-yellow-600",
-  blue: "text-blue-600",
-  gray: "text-gray-600",
+  green: "text-[#5BC0BE]",
+  red: "text-[#F59E0B]",
+  yellow: "text-[#F3C969]",
+  blue: "text-[#1B998B]",
+  gray: "text-[#CBD5E1]",
 };
 
 export function StatCard({ title, value, subtitle, color = "blue" }: StatCardProps) {
   return (
     <Card className="p-3 text-center">
-      <p className="text-xs text-gray-500">{title}</p>
+      <p className="text-xs text-[#CBD5E1]/60">{title}</p>
       <p className={cn("text-2xl font-bold mt-1", COLOR_MAP[color])}>{value}</p>
-      {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-[#CBD5E1]/50 mt-0.5">{subtitle}</p>}
     </Card>
   );
 }

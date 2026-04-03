@@ -70,31 +70,31 @@ export function SettleDialog({
           <DialogTitle>周结算确认</DialogTitle>
         </DialogHeader>
 
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-[#CBD5E1]">
           结算后将关闭本周，创建下周计划。请确认以下摘要：
         </p>
 
         {/* 功课摘要 */}
         <Card className="p-3">
-          <h3 className="text-xs font-medium text-gray-500 mb-2">功课</h3>
+          <h3 className="text-xs font-medium text-[#CBD5E1]/60 mb-2">功课</h3>
           <div className="grid grid-cols-3 gap-2 text-center text-sm">
             <div>
-              <p className="text-gray-400 text-xs">总数</p>
+              <p className="text-[#CBD5E1]/50 text-xs">总数</p>
               <p className="font-semibold">{homeworkCount.total}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs">完成</p>
-              <p className="font-semibold text-green-600">{homeworkCount.done}</p>
+              <p className="text-[#CBD5E1]/50 text-xs">完成</p>
+              <p className="font-semibold text-[#5BC0BE]">{homeworkCount.done}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs">未完成</p>
-              <p className={cn("font-semibold", homeworkCount.pending > 0 ? "text-red-600" : "text-gray-400")}>
+              <p className="text-[#CBD5E1]/50 text-xs">未完成</p>
+              <p className={cn("font-semibold", homeworkCount.pending > 0 ? "text-[#F59E0B]" : "text-[#CBD5E1]/40")}>
                 {homeworkCount.pending}
               </p>
             </div>
           </div>
           {homeworkCount.pending > 0 && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs text-[#F59E0B] mt-1">
               未完成功课将标记为 overdue
             </p>
           )}
@@ -103,14 +103,14 @@ export function SettleDialog({
         {/* 截止型任务 */}
         {deadlineTasks.length > 0 && (
           <Card className="p-3">
-            <h3 className="text-xs font-medium text-gray-500 mb-2">截止型任务</h3>
+            <h3 className="text-xs font-medium text-[#CBD5E1]/60 mb-2">截止型任务</h3>
             {deadlineTasks.map((t) => {
               const required = t.requiredSlots ?? 0;
               const met = t.doneCount >= required;
               return (
                 <div key={t.taskConfigId} className="flex items-center justify-between text-sm py-1">
                   <span>{t.name}</span>
-                  <span className={met ? "text-green-600" : "text-red-600"}>
+                  <span className={met ? "text-[#5BC0BE]" : "text-[#F59E0B]"}>
                     {t.doneCount}/{required} {met ? "✓" : "未达标"}
                   </span>
                 </div>
@@ -121,18 +121,18 @@ export function SettleDialog({
 
         {/* 配额型结转预览 */}
         <Card className="p-3">
-          <h3 className="text-xs font-medium text-gray-500 mb-2">配额型 → 下周结转</h3>
+          <h3 className="text-xs font-medium text-[#CBD5E1]/60 mb-2">配额型 → 下周结转</h3>
           <div className="space-y-1.5">
             {carryOverPreview.map((t) => (
               <div key={t.name} className="flex items-center justify-between text-sm">
                 <span>{t.name}</span>
-                <span className="text-gray-500">
+                <span className="text-[#CBD5E1]/60">
                   {t.doneCount}/{t.budget}
                   {t.carry > 0 && (
-                    <span className="text-orange-500 ml-1">→ 结转 {t.carry}</span>
+                    <span className="text-[#F3C969] ml-1">→ 结转 {t.carry}</span>
                   )}
                   {t.carry === 0 && (
-                    <span className="text-green-500 ml-1">→ 不结转</span>
+                    <span className="text-[#5BC0BE] ml-1">→ 不结转</span>
                   )}
                 </span>
               </div>

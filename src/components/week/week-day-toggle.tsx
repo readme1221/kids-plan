@@ -18,9 +18,9 @@ export function WeekDayToggle({ dates, onToggle }: WeekDayToggleProps) {
           className={cn(
             "flex-1 flex flex-col items-center py-2 rounded-lg text-xs transition-colors",
             d.isOpen
-              ? "bg-blue-600 text-white"
-              : "bg-gray-800 text-gray-500",
-            d.isToday && "ring-2 ring-blue-300",
+              ? "bg-[#1B998B] text-[#F1F5F9]"
+              : "bg-[#1C2541] text-[#CBD5E1]/50",
+            d.isToday && "ring-2 ring-[#F3C969]",
           )}
         >
           <span className="font-medium">{getDayName(d.dayOfWeek)}</span>

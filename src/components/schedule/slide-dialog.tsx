@@ -45,7 +45,7 @@ export function SlideDialog({
         <DialogHeader>
           <DialogTitle>滑移原因</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-gray-400 mb-3">
+        <p className="text-sm text-[#CBD5E1] mb-3">
           「{taskName}」未完成，请选择原因：
         </p>
         <div className="space-y-2">
@@ -55,8 +55,8 @@ export function SlideDialog({
               onClick={() => setSelected(r.value)}
               className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
                 selected === r.value
-                  ? "bg-orange-900/50 text-orange-300 ring-2 ring-orange-600"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-[#F3C969]/20 text-[#F3C969] ring-2 ring-[#F3C969]/50"
+                  : "bg-[#1C2541] text-[#CBD5E1] hover:bg-[#2a3a5c]"
               }`}
             >
               {r.label}

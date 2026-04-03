@@ -11,21 +11,21 @@ type CapacityGaugeProps = {
 const STATUS_CONFIG = {
   normal: {
     label: "正常",
-    color: "text-green-400",
-    bg: "bg-green-900/30",
-    border: "border-green-800",
+    color: "text-[#5BC0BE]",
+    bg: "bg-[#1B998B]/15",
+    border: "border-[#1B998B]/40",
   },
   tight: {
     label: "紧张",
-    color: "text-yellow-400",
-    bg: "bg-yellow-900/30",
-    border: "border-yellow-800",
+    color: "text-[#F3C969]",
+    bg: "bg-[#F3C969]/10",
+    border: "border-[#F3C969]/30",
   },
   overloaded: {
     label: "超载",
-    color: "text-red-400",
-    bg: "bg-red-900/30",
-    border: "border-red-800",
+    color: "text-[#F59E0B]",
+    bg: "bg-[#F59E0B]/10",
+    border: "border-[#F59E0B]/30",
   },
 };
 
@@ -39,19 +39,19 @@ export function CapacityGauge({
   return (
     <div className={cn("rounded-xl p-4 border", config.bg, config.border)}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-300">周容量</span>
+        <span className="text-sm font-medium text-[#CBD5E1]">周容量</span>
         <span className={cn("text-sm font-bold", config.color)}>
           {config.label}
         </span>
       </div>
       <div className="flex items-center gap-4 text-sm">
         <div>
-          <span className="text-gray-400">剩余容量</span>
-          <span className="ml-1 font-semibold">{remainingCapacity}</span>
+          <span className="text-[#CBD5E1]">剩余容量</span>
+          <span className="ml-1 font-semibold text-[#F1F5F9]">{remainingCapacity}</span>
         </div>
         <div>
-          <span className="text-gray-400">剩余需求</span>
-          <span className="ml-1 font-semibold">{remainingDemand}</span>
+          <span className="text-[#CBD5E1]">剩余需求</span>
+          <span className="ml-1 font-semibold text-[#F1F5F9]">{remainingDemand}</span>
         </div>
       </div>
     </div>

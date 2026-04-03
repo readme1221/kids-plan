@@ -25,10 +25,10 @@ const PROGRESS_LABELS: Record<ProgressStage, string> = {
 };
 
 const PROGRESS_COLORS: Record<ProgressStage, string> = {
-  not_started: "bg-gray-700 text-gray-300",
-  in_progress: "bg-blue-900/60 text-blue-300",
-  mostly_done: "bg-yellow-900/60 text-yellow-300",
-  completed_for_week: "bg-green-900/60 text-green-300",
+  not_started: "bg-[#2a3a5c] text-[#CBD5E1]",
+  in_progress: "bg-[#1B998B]/30 text-[#5BC0BE]",
+  mostly_done: "bg-[#F3C969]/20 text-[#F3C969]",
+  completed_for_week: "bg-[#5BC0BE]/20 text-[#5BC0BE]",
 };
 
 const TYPE_LABELS: Record<TaskType, string> = {
@@ -70,11 +70,11 @@ export function TaskCard({
 
           <div className="flex items-center gap-3 text-sm">
             {target !== null && target !== undefined && (
-              <span className="text-gray-400">
-                <span className={cn("font-semibold", ratio >= 1 && "text-green-400")}>
+              <span className="text-[#CBD5E1]">
+                <span className={cn("font-semibold", ratio >= 1 && "text-[#5BC0BE]")}>
                   {doneCount}
                 </span>
-                <span className="text-gray-500">/{target}</span>
+                <span className="text-[#CBD5E1]/60">/{target}</span>
               </span>
             )}
 
@@ -87,11 +87,11 @@ export function TaskCard({
 
           {/* Progress bar */}
           {target !== null && target !== undefined && target > 0 && (
-            <div className="mt-2 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+            <div className="mt-2 h-1.5 bg-[#2a3a5c] rounded-full overflow-hidden">
               <div
                 className={cn(
                   "h-full rounded-full transition-all",
-                  ratio >= 1 ? "bg-green-500" : ratio >= 0.5 ? "bg-blue-500" : "bg-gray-500",
+                  ratio >= 1 ? "bg-[#5BC0BE]" : ratio >= 0.5 ? "bg-[#1B998B]" : "bg-[#2a3a5c]",
                 )}
                 style={{ width: `${Math.min(100, ratio * 100)}%` }}
               />

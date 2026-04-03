@@ -4,7 +4,7 @@
   "description": "孩子每日学习计划 Dashboard",
   "start_url": "/day",
   "display": "standalone",
-  "background_color": "#0a1628",
+  "background_color": "#0B132B",
   "theme_color": "#3b82f6",
   "orientation": "portrait",
   "icons": [

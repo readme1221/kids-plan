@@ -53,8 +53,8 @@ export function PeriodSection({
                 className={cn(
                   "w-7 h-7 rounded-full text-sm font-bold flex items-center justify-center",
                   parentSlots <= 0
-                    ? "bg-gray-800 text-gray-600"
-                    : "bg-gray-700 text-gray-300 active:bg-gray-600",
+                    ? "bg-[#2a3a5c]/50 text-[#CBD5E1]/30"
+                    : "bg-[#2a3a5c] text-[#CBD5E1] active:bg-[#1B998B]/30",
                 )}
               >
                 -
@@ -70,8 +70,8 @@ export function PeriodSection({
                 className={cn(
                   "w-7 h-7 rounded-full text-sm font-bold flex items-center justify-center",
                   parentSlots >= maxSlots
-                    ? "bg-gray-800 text-gray-600"
-                    : "bg-blue-900/50 text-blue-400 active:bg-blue-900/70",
+                    ? "bg-[#2a3a5c]/50 text-[#CBD5E1]/30"
+                    : "bg-[#1B998B]/30 text-[#5BC0BE] active:bg-[#1B998B]/50",
                 )}
               >
                 +

@@ -34,9 +34,9 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="theme-color" content="#0a1628" />
+        <meta name="theme-color" content="#0B132B" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#0a1628] text-[#c0c8d8]">
+      <body className="min-h-full flex flex-col bg-[#0B132B] text-[#F1F5F9]">
         <main className="flex-1 pb-20">{children}</main>
         <BottomNav />
         <Toaster position="top-center" />

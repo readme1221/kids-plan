@@ -45,7 +45,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
         <select
           value={currentWeekId}
           onChange={(e) => router.push(`/reports?weekId=${e.target.value}`)}
-          className="text-sm bg-gray-800 border-gray-700 border rounded-lg px-2 py-1"
+          className="text-sm bg-[#1C2541] border-[#2a3a5c] border rounded-lg px-2 py-1"
         >
           {weeks.map((w) => (
             <option key={w.id} value={w.id}>
@@ -86,20 +86,20 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
 
       {/* 功课详情 */}
       <section>
-        <h2 className="text-sm font-medium text-gray-500 mb-2">功课</h2>
+        <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">功课</h2>
         <Card className="p-3">
           <div className="grid grid-cols-3 text-center text-sm">
             <div>
-              <p className="text-gray-400 text-xs">总数</p>
+              <p className="text-[#CBD5E1]/60 text-xs">总数</p>
               <p className="font-bold">{report.homeworkStats.total}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs">完成</p>
-              <p className="font-bold text-green-600">{report.homeworkStats.done}</p>
+              <p className="text-[#CBD5E1]/60 text-xs">完成</p>
+              <p className="font-bold text-[#5BC0BE]">{report.homeworkStats.done}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs">过期</p>
-              <p className={cn("font-bold", report.homeworkStats.overdue > 0 ? "text-red-600" : "text-gray-400")}>
+              <p className="text-[#CBD5E1]/60 text-xs">过期</p>
+              <p className={cn("font-bold", report.homeworkStats.overdue > 0 ? "text-[#F59E0B]" : "text-[#CBD5E1]/40")}>
                 {report.homeworkStats.overdue}
               </p>
             </div>
@@ -109,7 +109,7 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
 
       {/* 配额型任务 */}
       <section>
-        <h2 className="text-sm font-medium text-gray-500 mb-2">配额型任务</h2>
+        <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">配额型任务</h2>
         <div className="space-y-2">
           {report.quotaStats.tasks.map((t) => {
             const ratio = t.budget > 0 ? t.doneCount / t.budget : 0;
@@ -117,26 +117,26 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
               <Card key={t.name} className="p-3">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium">{t.name}</span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-[#CBD5E1]/40">
                     {PROGRESS_LABELS[t.progressStage]}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div className="flex-1 h-2 bg-[#2a3a5c] rounded-full overflow-hidden">
                     <div
                       className={cn(
                         "h-full rounded-full",
-                        ratio >= 1 ? "bg-green-500" : ratio >= 0.5 ? "bg-blue-500" : "bg-orange-400",
+                        ratio >= 1 ? "bg-[#5BC0BE]" : ratio >= 0.5 ? "bg-[#1B998B]" : "bg-[#F3C969]/50",
                       )}
                       style={{ width: `${Math.min(100, ratio * 100)}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-400 whitespace-nowrap">
+                  <span className="text-sm text-[#CBD5E1] whitespace-nowrap">
                     {t.doneCount}/{t.budget}
                   </span>
                 </div>
                 {t.carriedOverSlots > 0 && (
-                  <p className="text-xs text-orange-500 mt-1">
+                  <p className="text-xs text-[#F3C969] mt-1">
                     结转 {t.carriedOverSlots} 槽
                   </p>
                 )}
@@ -149,16 +149,16 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
       {/* 固定时点 */}
       {report.fixedTimeStats.tasks.length > 0 && (
         <section>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">固定时点</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">固定时点</h2>
           <div className="space-y-2">
             {report.fixedTimeStats.tasks.map((t) => (
               <Card key={t.name} className="p-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{t.name}</span>
                   <div className="flex gap-3 text-sm">
-                    <span className="text-green-600">完成 {t.doneCount}</span>
+                    <span className="text-[#5BC0BE]">完成 {t.doneCount}</span>
                     {t.missedCount > 0 && (
-                      <span className="text-red-500">错过 {t.missedCount}</span>
+                      <span className="text-[#F59E0B]">错过 {t.missedCount}</span>
                     )}
                   </div>
                 </div>
@@ -173,14 +173,14 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
       {/* 滑移原因统计 */}
       {Object.keys(report.slideReasons).length > 0 && (
         <section>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">滑移原因</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">滑移原因</h2>
           <Card className="p-3">
             <div className="space-y-2">
               {Object.entries(report.slideReasons)
                 .sort(([, a], [, b]) => b - a)
                 .map(([reason, count]) => (
                   <div key={reason} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-300">
+                    <span className="text-[#CBD5E1]">
                       {SLIDE_REASON_LABELS[reason] ?? reason}
                     </span>
                     <span className="font-semibold">{count}</span>
@@ -194,11 +194,11 @@ export function ReportsClient({ report, weeks, currentWeekId }: Props) {
       {/* 预警记录 */}
       {report.warnings.length > 0 && (
         <section>
-          <h2 className="text-sm font-medium text-gray-500 mb-2">预警</h2>
+          <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">预警</h2>
           <div className="space-y-1">
             {report.warnings.map((w, i) => (
-              <Card key={i} className="p-3 bg-red-900/30 border-red-800">
-                <p className="text-sm text-red-400">{w}</p>
+              <Card key={i} className="p-3 bg-[#F59E0B]/10 border-[#F59E0B]/30">
+                <p className="text-sm text-[#F59E0B]">{w}</p>
               </Card>
             ))}
           </div>

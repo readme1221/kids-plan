@@ -22,11 +22,11 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 const SOURCE_COLORS: Record<string, string> = {
-  fixed_time: "border-l-purple-400",
-  manual_pin: "border-l-blue-400",
-  homework: "border-l-red-400",
-  auto_fill: "border-l-gray-600",
-  locked: "border-l-purple-300",
+  fixed_time: "border-l-[#1B998B]",
+  manual_pin: "border-l-[#F3C969]",
+  homework: "border-l-[#F59E0B]",
+  auto_fill: "border-l-[#2a3a5c]",
+  locked: "border-l-[#1B998B]/60",
 };
 
 export function SlotCard({
@@ -41,8 +41,8 @@ export function SlotCard({
     <Card
       className={cn(
         "px-3 py-2.5 border-l-4 flex items-center justify-between",
-        SOURCE_COLORS[sourceType] ?? "border-l-gray-200",
-        isCompleted && "opacity-50 bg-green-900/30",
+        SOURCE_COLORS[sourceType] ?? "border-l-[#2a3a5c]",
+        isCompleted && "opacity-50 bg-[#5BC0BE]/10",
       )}
     >
       <div className="flex items-center gap-2 min-w-0">
@@ -54,7 +54,7 @@ export function SlotCard({
         >
           {name}
         </span>
-        <span className="text-xs text-gray-400 shrink-0">
+        <span className="text-xs text-[#CBD5E1]/60 shrink-0">
           {SOURCE_LABELS[sourceType]}
         </span>
       </div>
@@ -64,7 +64,7 @@ export function SlotCard({
           {onDone && (
             <button
               onClick={onDone}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-green-900/40 text-green-400 text-lg active:bg-green-900/60"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1B998B]/30 text-[#5BC0BE] text-lg active:bg-[#1B998B]/50"
               aria-label="完成"
             >
               ✓
@@ -73,7 +73,7 @@ export function SlotCard({
           {onSlide && (
             <button
               onClick={onSlide}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-orange-900/40 text-orange-400 text-sm active:bg-orange-900/60"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F59E0B]/20 text-[#F3C969] text-sm active:bg-[#F59E0B]/30"
               aria-label="滑移"
             >
               →
