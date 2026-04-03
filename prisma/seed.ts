@@ -1,7 +1,12 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const url = process.env.DATABASE_URL!;
+const isNeon = url.includes("neon.tech");
+const adapter = isNeon
+  ? new PrismaNeon({ connectionString: url })
+  : new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

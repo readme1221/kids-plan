@@ -2,8 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "misans/lib/Normal/MiSans-Regular.min.css";
-@import "misans/lib/Normal/MiSans-Medium.min.css";
-@import "misans/lib/Normal/MiSans-Semibold.min.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -130,5 +128,6 @@
   html {
     font-family: "MiSans", "MiSans Normal", system-ui, -apple-system, sans-serif;
     font-size: 20px;
+    font-synthesis: weight style;
   }
 }
