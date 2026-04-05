@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { PeriodSection } from "@/components/schedule/period-section";
 import { SlotCard } from "@/components/schedule/slot-card";
 import { SlideDialog } from "@/components/schedule/slide-dialog";
@@ -49,43 +50,94 @@ type Props = {
   consecutiveSlideWarning: boolean;
 };
 
+const PERIOD_LABELS: Record<PeriodName, string> = {
+  morning: "上午",
+  afternoon_early: "下午前",
+  afternoon_late: "下午后",
+  evening: "晚上",
+};
+
 export function DayPageClient({
   weekId,
   date,
   dayOfWeek,
   isOpen,
   dayPlanId,
-  periodConfig,
+  periodConfig: initialPeriodConfig,
   slots,
   availableTasks,
   pendingHomeworks,
   todayActivities,
   consecutiveSlideWarning,
 }: Props) {
+  // ── 流程状态 ──
+  // "idle" = 未开始 / 已有计划
+  // "setup" = 步骤 1-3：选时段、定槽数、加功课
+  // "done" = 已生成计划，显示槽位
+  const [phase, setPhase] = useState<"idle" | "setup" | "done">(
+    dayPlanId ? "done" : "idle",
+  );
+
+  // 可编辑的 periodConfig（步骤 1-2 用）
+  const [editConfig, setEditConfig] = useState<PeriodConfig>(initialPeriodConfig);
+
   const [slideTarget, setSlideTarget] = useState<SlotData | null>(null);
   const [showHomeworkDialog, setShowHomeworkDialog] = useState(false);
   const [showPinSelect, setShowPinSelect] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dateObj = parseDate(date);
 
-  // ── 生成/重新生成当日计划 ──
-  const handleSetupDay = async (open: boolean) => {
-    const result = await setupDay({
-      weekId,
-      date: dateObj,
-      isOpen: open,
-      periodConfig,
-    });
+  // ── 步骤 1-2：切换时段开关 ──
+  const togglePeriod = (period: PeriodName) => {
+    setEditConfig((prev) => ({
+      ...prev,
+      [period]: {
+        ...prev[period],
+        enabled: !prev[period].enabled,
+        parentSlots: !prev[period].enabled ? prev[period].maxSlots : 0,
+      },
+    }));
+  };
 
-    if (result.warnings.length > 0) {
-      for (const w of result.warnings) {
-        if (w.type === "daily_deadline_conflict") {
-          toast.warning(w.message);
-        } else {
-          toast.info(w.message);
+  // ── 步骤 2：调整槽数 ──
+  const setPeriodSlots = (period: PeriodName, slots: number) => {
+    setEditConfig((prev) => ({
+      ...prev,
+      [period]: { ...prev[period], parentSlots: slots },
+    }));
+  };
+
+  // ── 步骤 4：确认排程 → 系统自动填充 ──
+  const handleConfirmSetup = async () => {
+    setIsSubmitting(true);
+    try {
+      const result = await setupDay({
+        weekId,
+        date: dateObj,
+        isOpen: true,
+        periodConfig: editConfig,
+      });
+
+      if (result.warnings.length > 0) {
+        for (const w of result.warnings) {
+          if (w.type === "daily_deadline_conflict") {
+            toast.warning(w.message);
+          } else {
+            toast.info(w.message);
+          }
         }
       }
+      setPhase("done");
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  // ── 今天不学 ──
+  const handleDayOff = async () => {
+    await setupDay({ weekId, date: dateObj, isOpen: false });
+    setPhase("idle");
   };
 
   // ── 完成 ──
@@ -134,8 +186,7 @@ export function DayPageClient({
       toast.error("请先生成当日计划");
       return;
     }
-    // 找到有空位的时段
-    const period = findPeriodWithSpace(slots, periodConfig);
+    const period = findPeriodWithSpace(slots, initialPeriodConfig);
     if (!period) {
       toast.error("所有时段已满");
       return;
@@ -164,6 +215,12 @@ export function DayPageClient({
     }
   }
 
+  // 当日总槽数
+  const totalSlots = PERIODS.reduce(
+    (sum, p) => sum + (editConfig[p].enabled ? editConfig[p].parentSlots : 0),
+    0,
+  );
+
   return (
     <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
       {/* Header */}
@@ -174,21 +231,23 @@ export function DayPageClient({
           </h1>
           {todayActivities.length > 0 && (
             <div className="flex gap-1 mt-1">
-              {todayActivities.map((a) => (
-                <Badge key={a.name} variant="secondary" className="text-xs">
+              {todayActivities.map((a, i) => (
+                <Badge key={`${a.name}-${i}`} variant="secondary" className="text-xs">
                   {a.name} {a.startTime}
                 </Badge>
               ))}
             </div>
           )}
         </div>
-        <Button
-          size="sm"
-          onClick={() => handleSetupDay(!isOpen)}
-          variant={isOpen ? "default" : "outline"}
-        >
-          {dayPlanId ? "重新排程" : "生成计划"}
-        </Button>
+        {phase === "done" && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setPhase("setup")}
+          >
+            重新排程
+          </Button>
+        )}
       </div>
 
       {/* Warnings */}
@@ -220,71 +279,193 @@ export function DayPageClient({
         </Card>
       )}
 
-      <Separator />
-
-      {/* Period sections with slots */}
-      {dayPlanId && isOpen ? (
-        <div className="space-y-4">
-          {PERIODS.map((period) => (
-            <PeriodSection
-              key={period}
-              period={period}
-              maxSlots={periodConfig[period].maxSlots}
-              parentSlots={periodConfig[period].parentSlots}
-              enabled={periodConfig[period].enabled}
-            >
-              {slotsByPeriod[period].length > 0 ? (
-                slotsByPeriod[period]
-                  .sort((a, b) => a.order - b.order)
-                  .map((slot) => (
-                    <SlotCard
-                      key={slot.id}
-                      id={slot.id}
-                      name={slot.name}
-                      sourceType={slot.sourceType}
-                      isLocked={slot.isLocked}
-                      isCompleted={slot.isCompleted}
-                      onDone={() => handleDone(slot)}
-                      onSlide={() => setSlideTarget(slot)}
-                    />
-                  ))
-              ) : (
-                <p className="text-xs text-gray-400 py-2">暂无任务</p>
-              )}
-            </PeriodSection>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 text-gray-400">
-          <p className="text-sm">
-            {isOpen ? '点击「生成计划」开始' : '今天休息'}
-          </p>
-        </div>
-      )}
-
-      {/* Bottom action bar */}
-      {dayPlanId && isOpen && (
-        <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
-          <div className="max-w-lg mx-auto flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => setShowHomeworkDialog(true)}
-            >
-              + 功课
+      {/* ════════════════════════════════════════════════ */}
+      {/* PHASE: idle — 还没开始 */}
+      {/* ════════════════════════════════════════════════ */}
+      {phase === "idle" && (
+        <div className="text-center py-12 space-y-4">
+          <p className="text-[#CBD5E1]">今天要学习吗？</p>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={() => setPhase("setup")}>
+              开始计划
             </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => setShowPinSelect(true)}
-            >
-              + 手动指定
+            <Button variant="outline" onClick={handleDayOff}>
+              今天休息
             </Button>
           </div>
         </div>
       )}
 
-      {/* Slide dialog */}
+      {/* ════════════════════════════════════════════════ */}
+      {/* PHASE: setup — 选时段、定槽数、加功课 */}
+      {/* ════════════════════════════════════════════════ */}
+      {phase === "setup" && (
+        <div className="space-y-4">
+          <Separator />
+
+          {/* 步骤 1：选时段 + 步骤 2：定槽数 */}
+          <div>
+            <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-3">
+              选择时段与槽数
+            </h2>
+            <div className="space-y-3">
+              {PERIODS.map((period) => (
+                <Card key={period} className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        checked={editConfig[period].enabled}
+                        onCheckedChange={() => togglePeriod(period)}
+                      />
+                      <span className="text-sm font-medium">
+                        {PERIOD_LABELS[period]}
+                      </span>
+                    </div>
+
+                    {editConfig[period].enabled && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-[#CBD5E1]/50">
+                          上限 {editConfig[period].maxSlots}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() =>
+                              setPeriodSlots(period, Math.max(0, editConfig[period].parentSlots - 1))
+                            }
+                            disabled={editConfig[period].parentSlots <= 0}
+                            className="w-8 h-8 rounded-full text-sm font-bold flex items-center justify-center bg-[#2a3a5c] text-[#CBD5E1] disabled:opacity-30"
+                          >
+                            -
+                          </button>
+                          <span className="text-sm font-semibold w-6 text-center">
+                            {editConfig[period].parentSlots}
+                          </span>
+                          <button
+                            onClick={() =>
+                              setPeriodSlots(
+                                period,
+                                Math.min(editConfig[period].maxSlots, editConfig[period].parentSlots + 1),
+                              )
+                            }
+                            disabled={editConfig[period].parentSlots >= editConfig[period].maxSlots}
+                            className="w-8 h-8 rounded-full text-sm font-bold flex items-center justify-center bg-[#1B998B]/30 text-[#5BC0BE] disabled:opacity-30"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* 步骤 3：添加功课 */}
+          <div>
+            <h2 className="text-sm font-medium text-[#CBD5E1]/60 mb-2">
+              今日功课（可选）
+            </h2>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowHomeworkDialog(true)}
+            >
+              + 添加功课
+            </Button>
+          </div>
+
+          {/* 汇总 + 确认 */}
+          <Card className="p-4 bg-[#1B998B]/10 border-[#1B998B]/30">
+            <p className="text-sm text-[#CBD5E1]">
+              今日共 <span className="font-bold text-[#F1F5F9]">{totalSlots}</span> 个槽位
+              {pendingHomeworks.length > 0 && (
+                <span>，{pendingHomeworks.length} 项功课待排</span>
+              )}
+            </p>
+          </Card>
+
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setPhase("idle")}
+            >
+              返回
+            </Button>
+            <Button
+              className="flex-1"
+              onClick={handleConfirmSetup}
+              disabled={totalSlots === 0 || isSubmitting}
+            >
+              {isSubmitting ? "排程中..." : "确认排程"}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ════════════════════════════════════════════════ */}
+      {/* PHASE: done — 显示排程结果 */}
+      {/* ════════════════════════════════════════════════ */}
+      {phase === "done" && (
+        <>
+          <Separator />
+
+          <div className="space-y-4">
+            {PERIODS.map((period) => (
+              <PeriodSection
+                key={period}
+                period={period}
+                maxSlots={initialPeriodConfig[period].maxSlots}
+                parentSlots={initialPeriodConfig[period].parentSlots}
+                enabled={initialPeriodConfig[period].enabled}
+              >
+                {slotsByPeriod[period].length > 0 ? (
+                  slotsByPeriod[period]
+                    .sort((a, b) => a.order - b.order)
+                    .map((slot) => (
+                      <SlotCard
+                        key={slot.id}
+                        id={slot.id}
+                        name={slot.name}
+                        sourceType={slot.sourceType}
+                        isLocked={slot.isLocked}
+                        isCompleted={slot.isCompleted}
+                        onDone={() => handleDone(slot)}
+                        onSlide={() => setSlideTarget(slot)}
+                      />
+                    ))
+                ) : (
+                  <p className="text-xs text-[#CBD5E1]/40 py-2">暂无任务</p>
+                )}
+              </PeriodSection>
+            ))}
+          </div>
+
+          {/* Bottom action bar */}
+          <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
+            <div className="max-w-lg mx-auto flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowHomeworkDialog(true)}
+              >
+                + 功课
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowPinSelect(true)}
+              >
+                + 手动指定
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── Dialogs ── */}
+
       {slideTarget && (
         <SlideDialog
           open={!!slideTarget}
@@ -294,7 +475,6 @@ export function DayPageClient({
         />
       )}
 
-      {/* Add homework dialog */}
       <AddHomeworkDialog
         open={showHomeworkDialog}
         onClose={() => setShowHomeworkDialog(false)}
@@ -302,7 +482,6 @@ export function DayPageClient({
         defaultDate={date}
       />
 
-      {/* Manual pin select */}
       {showPinSelect && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-end justify-center">
           <div className="bg-[#1C2541] rounded-t-2xl w-full max-w-lg p-4 pb-8 safe-area-bottom">
@@ -320,7 +499,7 @@ export function DayPageClient({
                 <button
                   key={t.id}
                   onClick={() => handleManualPin(t.id)}
-                  className="w-full text-left px-4 py-3 rounded-lg bg-[#1C2541] text-sm hover:bg-[#2a3a5c] active:bg-[#1B998B]/20"
+                  className="w-full text-left px-4 py-3 rounded-lg bg-[#0B132B] text-sm hover:bg-[#2a3a5c] active:bg-[#1B998B]/20"
                 >
                   {t.name}
                 </button>
